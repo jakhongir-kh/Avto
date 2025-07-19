@@ -4,13 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.uztest.avto.presentation.components.BottomNavigationBar
+import com.uztest.avto.presentation.navigation.Navigation
 import com.uztest.avto.ui.theme.AvtoTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,27 +19,24 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AvtoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android", modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                DrivingTestApp()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!", modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AvtoTheme {
-        Greeting("Android")
+fun DrivingTestApp() {
+    val navController = rememberNavController()
+    
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
+        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            Navigation(navController = navController)
+        }
     }
 }
