@@ -184,8 +184,8 @@ private fun getCategoryIcon(iconName: String): ImageVector {
         "rule" -> Icons.Default.Rule
         "security" -> Icons.Default.Security
         "local_parking" -> Icons.Default.LocalParking
-        "intersection" -> Icons.Default.Intersection
-        "highway" -> Icons.Default.Highway
+        "intersection" -> Icons.Default.Insights
+        "highway" -> Icons.Default.AddRoad
         else -> Icons.Default.Quiz
     }
 }
