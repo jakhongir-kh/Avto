@@ -5,12 +5,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -25,105 +27,147 @@ fun ProfileScreen() {
         // Header
         TopAppBar(
             title = {
-                Text(
-                    text = "Profile",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                Column {
+                    Text(
+                        text = "Profile",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "Your learning progress",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = Color.Transparent
             )
         )
         
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             
             // Profile picture
             Box(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(140.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                    .background(
+                        brush = androidx.compose.ui.graphics.Brush.radialGradient(
+                            colors = listOf(
+                                Color(0xFFE3F2FD),
+                                Color(0xFF90CAF9)
+                            )
+                        )
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Default.Person,
+                    imageVector = Icons.Outlined.Person,
                     contentDescription = null,
-                    modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    modifier = Modifier.size(70.dp),
+                    tint = Color.White
                 )
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "John Doe",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            
-            Text(
-                text = "Learning to drive",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            // Stats
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ) {
-                    Text(
-                        text = "Your Progress",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
-                    
-                    ProfileStat("Tests Completed", "12")
-                    Spacer(modifier = Modifier.height(12.dp))
-                    ProfileStat("Average Score", "85%")
-                    Spacer(modifier = Modifier.height(12.dp))
-                    ProfileStat("Best Category", "Traffic Signs")
-                    Spacer(modifier = Modifier.height(12.dp))
-                    ProfileStat("Study Streak", "5 days")
-                }
             }
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Settings
+            Text(
+                text = "John Doe",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = "Learning to drive",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Normal,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            
+            Spacer(modifier = Modifier.height(40.dp))
+            
+            // Stats
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 2.dp,
+                        shape = RoundedCornerShape(24.dp),
+                        spotColor = Color.Black.copy(alpha = 0.1f)
+                    ),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(20.dp)
+                    modifier = Modifier.padding(28.dp)
+                ) {
+                    Text(
+                        text = "Your Progress",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    
+                    Spacer(modifier = Modifier.height(20.dp))
+                    
+                    ProfileStat("Tests Completed", "12")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ProfileStat("Average Score", "85%")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ProfileStat("Best Category", "Traffic Signs")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ProfileStat("Study Streak", "5 days")
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            // Settings
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 2.dp,
+                        shape = RoundedCornerShape(24.dp),
+                        spotColor = Color.Black.copy(alpha = 0.1f)
+                    ),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(28.dp)
                 ) {
                     Text(
                         text = "Settings",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     
-                    SettingsItem("Notifications", Icons.Default.Notifications)
-                    SettingsItem("Dark Mode", Icons.Default.DarkMode)
-                    SettingsItem("Language", Icons.Default.Language)
-                    SettingsItem("Help & Support", Icons.Default.Help)
+                    SettingsItem("Notifications", Icons.Outlined.Notifications)
+                    SettingsItem("Dark Mode", Icons.Outlined.DarkMode)
+                    SettingsItem("Language", Icons.Outlined.Language)
+                    SettingsItem("Help & Support", Icons.Outlined.Help)
                 }
             }
             
@@ -134,11 +178,11 @@ fun ProfileScreen() {
                 onClick = { /* Handle sign out */ },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp)
+                    .height(60.dp),
+                shape = RoundedCornerShape(20.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Logout,
+                    imageVector = Icons.Outlined.Logout,
                     contentDescription = null,
                     modifier = Modifier.size(20.dp)
                 )
@@ -162,12 +206,13 @@ private fun ProfileStat(label: String, value: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Normal,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.primary
         )
     }
@@ -178,28 +223,51 @@ private fun SettingsItem(title: String, icon: androidx.compose.ui.graphics.vecto
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(20.dp))
         
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f)
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.onSurface
         )
         
-        Icon(
-            imageVector = Icons.Default.ChevronRight,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.ChevronRight,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
         )
     }
 }

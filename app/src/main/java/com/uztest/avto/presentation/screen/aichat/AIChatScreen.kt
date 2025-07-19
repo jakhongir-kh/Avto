@@ -6,11 +6,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -37,14 +39,23 @@ fun AIChatScreen() {
         // Header
         TopAppBar(
             title = {
-                Text(
-                    text = "AI Driving Instructor",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                Column {
+                    Text(
+                        text = "AI Assistant",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "Ask me anything about driving",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = Color.Transparent
             )
         )
         
@@ -53,8 +64,8 @@ fun AIChatScreen() {
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(messages) { message ->
                 MessageBubble(message = message)
@@ -65,8 +76,8 @@ fun AIChatScreen() {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(24.dp),
+                .padding(20.dp),
+            shape = RoundedCornerShape(28.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Row(
@@ -78,14 +89,33 @@ fun AIChatScreen() {
                 OutlinedTextField(
                     value = messageText,
                     onValueChange = { messageText = it },
-                    placeholder = { Text("Ask about driving rules...") },
+                    placeholder = { 
+                        Text(
+                            "Ask about driving rules...",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        ) 
+                    },
                     modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(20.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
                 )
                 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(12.dp))
                 
-                IconButton(
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(
+                            if (messageText.isNotBlank()) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    IconButton(
                     onClick = {
                         if (messageText.isNotBlank()) {
                             messages.add(ChatMessage(messageText, true))
@@ -101,12 +131,15 @@ fun AIChatScreen() {
                             )
                         }
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Send,
-                        contentDescription = "Send",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Send,
+                            contentDescription = "Send",
+                            modifier = Modifier.size(20.dp),
+                            tint = if (messageText.isNotBlank()) Color.White
+                                   else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        )
+                    }
                 }
             }
         }
@@ -120,28 +153,31 @@ private fun MessageBubble(message: ChatMessage) {
         horizontalArrangement = if (message.isFromUser) Arrangement.End else Arrangement.Start
     ) {
         Card(
-            modifier = Modifier.widthIn(max = 280.dp),
+            modifier = Modifier.widthIn(max = 300.dp),
             shape = RoundedCornerShape(
-                topStart = 16.dp,
-                topEnd = 16.dp,
-                bottomStart = if (message.isFromUser) 16.dp else 4.dp,
-                bottomEnd = if (message.isFromUser) 4.dp else 16.dp
+                topStart = 20.dp,
+                topEnd = 20.dp,
+                bottomStart = if (message.isFromUser) 20.dp else 6.dp,
+                bottomEnd = if (message.isFromUser) 6.dp else 20.dp
             ),
             colors = CardDefaults.cardColors(
                 containerColor = if (message.isFromUser) 
-                    MaterialTheme.colorScheme.primary 
+                    Color(0xFF90CAF9) // Soft Blue
                 else 
-                    MaterialTheme.colorScheme.surfaceVariant
-            )
+                    Color(0xFFF5F7FA) // Light Gray
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
             Text(
                 text = message.text,
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier.padding(16.dp),
                 color = if (message.isFromUser) 
-                    MaterialTheme.colorScheme.onPrimary 
+                    Color.White
                 else 
-                    MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodyMedium
+                    MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Normal,
+                lineHeight = MaterialTheme.typography.bodyMedium.lineHeight * 1.3
             )
         }
     }

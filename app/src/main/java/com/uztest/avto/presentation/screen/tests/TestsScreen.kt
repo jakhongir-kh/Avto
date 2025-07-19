@@ -7,12 +7,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,14 +40,23 @@ fun TestsScreen(
         // Header
         TopAppBar(
             title = {
-                Text(
-                    text = "Driving Test Categories",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                Column {
+                    Text(
+                        text = "Driving Tests",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "Choose your category",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = Color.Transparent
             )
         )
         
@@ -75,8 +85,8 @@ fun TestsScreen(
             else -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    contentPadding = PaddingValues(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(uiState.categories) { category ->
                         CategoryCard(
@@ -98,33 +108,41 @@ private fun CategoryCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(20.dp),
+                spotColor = Color.Black.copy(alpha = 0.1f)
+            )
             .clickable { onClick() },
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Icon
             Box(
                 modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(getCategoryColor(category.iconName)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = getCategoryIcon(category.iconName),
                     contentDescription = null,
-                    modifier = Modifier.size(28.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.White
                 )
             }
             
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(20.dp))
             
             // Content
             Column(
@@ -132,8 +150,8 @@ private fun CategoryCard(
             ) {
                 Text(
                     text = category.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 
@@ -142,28 +160,75 @@ private fun CategoryCard(
                 Text(
                     text = category.description,
                     style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Quiz,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    
-                    Spacer(modifier = Modifier.width(4.dp))
-                    
-                    Text(
-                        text = "${category.totalQuestions} questions",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Medium
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = "${category.totalQuestions} questions",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            // Arrow
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.ChevronRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+private fun getCategoryColor(iconName: String): Color {
+    return when (iconName) {
+        "traffic_light" -> Color(0xFF64B5F6) // Soft Blue
+        "rule" -> Color(0xFF81C784) // Soft Green
+        "security" -> Color(0xFFBA68C8) // Soft Purple
+        "local_parking" -> Color(0xFFFFB74D) // Soft Orange
+        "intersection" -> Color(0xFFF48FB1) // Soft Pink
+        "highway" -> Color(0xFF4FC3F7) // Light Blue
+        else -> Color(0xFF90CAF9) // Default Soft Blue
+    }
+}
+
+private fun getCategoryIcon(iconName: String): ImageVector {
+    return when (iconName) {
+        "traffic_light" -> Icons.Outlined.Traffic
+        "rule" -> Icons.Outlined.Gavel
+        "security" -> Icons.Outlined.Security
+        "local_parking" -> Icons.Outlined.LocalParking
+        "intersection" -> Icons.Outlined.Merge
+        "highway" -> Icons.Outlined.Highway
+        else -> Icons.Outlined.Quiz
+    }
+}
                     )
                 }
             }

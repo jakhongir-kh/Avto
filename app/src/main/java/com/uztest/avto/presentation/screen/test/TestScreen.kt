@@ -7,12 +7,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,25 +49,38 @@ fun TestScreen(
             title = {
                 if (!uiState.isCompleted) {
                     Text(
-                        text = "Question ${uiState.currentQuestionIndex + 1}/${uiState.questions.size}",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
+                        text = "${uiState.currentQuestionIndex + 1} of ${uiState.questions.size}",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 } else {
                     Text(
                         text = "Test Results",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             },
             navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                ) {
+                    Icon(
+                        Icons.Outlined.ArrowBack, 
+                        contentDescription = "Back",
+                        modifier = Modifier.size(20.dp),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = Color.Transparent
             )
         )
         
@@ -126,35 +140,61 @@ private fun TestQuestionScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
         // Progress bar
-        LinearProgressIndicator(
-            progress = { progress },
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(8.dp)
-                .clip(RoundedCornerShape(4.dp)),
-        )
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        // Question
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                .height(6.dp)
+                .clip(RoundedCornerShape(3.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
         ) {
-            Text(
-                text = question.text,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(20.dp),
-                textAlign = TextAlign.Start
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(progress)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(
+                        brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF64B5F6),
+                                Color(0xFF42A5F5)
+                            )
+                        )
+                    )
             )
         }
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        // Question
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 4.dp,
+                    shape = RoundedCornerShape(24.dp),
+                    spotColor = Color.Black.copy(alpha = 0.1f)
+                ),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        ) {
+            Text(
+                text = question.text,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(28.dp),
+                textAlign = TextAlign.Start,
+                color = MaterialTheme.colorScheme.onSurface,
+                lineHeight = MaterialTheme.typography.headlineMedium.lineHeight * 1.2
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(32.dp))
         
         // Options
         question.options.forEachIndexed { index, option ->
@@ -166,7 +206,7 @@ private fun TestQuestionScreen(
                 onClick = { onAnswerSelected(index) }
             )
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
         
         Spacer(modifier = Modifier.weight(1f))
@@ -181,11 +221,11 @@ private fun TestQuestionScreen(
                 onClick = onNextQuestion,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp)
+                    .height(60.dp),
+                shape = RoundedCornerShape(20.dp)
             ) {
                 Text(
-                    text = "Next Question",
+                    text = "Continue",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -203,56 +243,78 @@ private fun AnswerOption(
     onClick: () -> Unit
 ) {
     val backgroundColor = when {
-        showResult && isCorrect -> MaterialTheme.colorScheme.primaryContainer
-        showResult && isSelected && !isCorrect -> MaterialTheme.colorScheme.errorContainer
-        isSelected -> MaterialTheme.colorScheme.secondaryContainer
+        showResult && isCorrect -> Color(0xFFE8F5E8) // Pastel Green
+        showResult && isSelected && !isCorrect -> Color(0xFFFCE4EC) // Pastel Pink
+        isSelected -> Color(0xFFE3F2FD) // Pastel Blue
         else -> MaterialTheme.colorScheme.surface
     }
     
     val borderColor = when {
-        showResult && isCorrect -> MaterialTheme.colorScheme.primary
-        showResult && isSelected && !isCorrect -> MaterialTheme.colorScheme.error
-        isSelected -> MaterialTheme.colorScheme.secondary
-        else -> MaterialTheme.colorScheme.outline
+        showResult && isCorrect -> Color(0xFF81C784) // Soft Green
+        showResult && isSelected && !isCorrect -> Color(0xFFF48FB1) // Soft Pink
+        isSelected -> Color(0xFF90CAF9) // Soft Blue
+        else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
     }
     
     val textColor = when {
-        showResult && isCorrect -> MaterialTheme.colorScheme.onPrimaryContainer
-        showResult && isSelected && !isCorrect -> MaterialTheme.colorScheme.onErrorContainer
+        showResult && isCorrect -> Color(0xFF2E7D32) // Deep Green
+        showResult && isSelected && !isCorrect -> Color(0xFFC2185B) // Deep Pink
         else -> MaterialTheme.colorScheme.onSurface
     }
     
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(
+                elevation = if (isSelected || showResult) 3.dp else 1.dp,
+                shape = RoundedCornerShape(18.dp),
+                spotColor = Color.Black.copy(alpha = 0.08f)
+            )
             .clickable(enabled = !showResult) { onClick() }
             .border(
-                width = 2.dp,
+                width = if (isSelected || showResult) 2.dp else 0.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(18.dp)
             ),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Normal,
                 color = textColor,
                 modifier = Modifier.weight(1f)
             )
             
             if (showResult) {
-                Icon(
-                    imageVector = if (isCorrect) Icons.Default.Check else if (isSelected) Icons.Default.Close else Icons.Default.RadioButtonUnchecked,
-                    contentDescription = null,
-                    tint = if (isCorrect) MaterialTheme.colorScheme.primary else if (isSelected) MaterialTheme.colorScheme.error else Color.Transparent
-                )
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(
+                            if (isCorrect) Color(0xFF81C784) 
+                            else if (isSelected) Color(0xFFF48FB1) 
+                            else Color.Transparent
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isCorrect || (isSelected && !isCorrect)) {
+                        Icon(
+                            imageVector = if (isCorrect) Icons.Outlined.Check else Icons.Outlined.Close,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
             }
         }
     }
@@ -275,37 +337,38 @@ private fun TestResultScreen(
         // Result icon
         Box(
             modifier = Modifier
-                .size(120.dp)
-                .clip(RoundedCornerShape(60.dp))
+                .size(140.dp)
+                .clip(RoundedCornerShape(70.dp))
                 .background(
-                    if (testResult.isPassed) MaterialTheme.colorScheme.primaryContainer
-                    else MaterialTheme.colorScheme.errorContainer
+                    if (testResult.isPassed) Color(0xFFE8F5E8) // Pastel Green
+                    else Color(0xFFFCE4EC) // Pastel Pink
                 ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = if (testResult.isPassed) Icons.Default.CheckCircle else Icons.Default.Cancel,
+                imageVector = if (testResult.isPassed) Icons.Outlined.CheckCircle else Icons.Outlined.Cancel,
                 contentDescription = null,
-                modifier = Modifier.size(64.dp),
-                tint = if (testResult.isPassed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                modifier = Modifier.size(70.dp),
+                tint = if (testResult.isPassed) Color(0xFF81C784) else Color(0xFFF48FB1)
             )
         }
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         
         // Result text
         Text(
-            text = if (testResult.isPassed) "Congratulations!" else "Keep Practicing!",
+            text = if (testResult.isPassed) "Well Done!" else "Keep Learning!",
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = if (testResult.isPassed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+            fontWeight = FontWeight.Light,
+            color = if (testResult.isPassed) Color(0xFF81C784) else Color(0xFFF48FB1)
         )
         
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         
         Text(
             text = "You scored ${testResult.percentage}%",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface
         )
         
@@ -314,15 +377,19 @@ private fun TestResultScreen(
         // Stats
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
             Column(
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier.padding(28.dp)
             ) {
                 ResultStat("Correct Answers", "${testResult.correctAnswers}/${testResult.totalQuestions}")
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 ResultStat("Accuracy", "${testResult.percentage}%")
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 ResultStat("Time Taken", "${testResult.timeSpent / 1000}s")
             }
         }
@@ -334,8 +401,8 @@ private fun TestResultScreen(
             onClick = onRestartTest,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(16.dp)
+                .height(60.dp),
+            shape = RoundedCornerShape(20.dp)
         ) {
             Text(
                 text = "Try Again",
@@ -350,11 +417,11 @@ private fun TestResultScreen(
             onClick = onNavigateBack,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(16.dp)
+                .height(60.dp),
+            shape = RoundedCornerShape(20.dp)
         ) {
             Text(
-                text = "Back to Categories",
+                text = "Back to Tests",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -371,13 +438,14 @@ private fun ResultStat(label: String, value: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Normal,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
