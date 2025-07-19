@@ -13,9 +13,9 @@ import com.uztest.avto.presentation.screen.tests.TestsScreen
 fun Navigation(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = BottomNavItem.Tests.route
+        startDestination = "tests"
     ) {
-        composable(BottomNavItem.Tests.route) {
+        composable("tests") {
             TestsScreen(
                 onCategoryClick = { categoryId ->
                     navController.navigate("test/$categoryId")
@@ -23,11 +23,11 @@ fun Navigation(navController: NavHostController) {
             )
         }
         
-        composable(BottomNavItem.AIChat.route) {
+        composable("ai_chat") {
             AIChatScreen()
         }
         
-        composable(BottomNavItem.Profile.route) {
+        composable("profile") {
             ProfileScreen()
         }
         
