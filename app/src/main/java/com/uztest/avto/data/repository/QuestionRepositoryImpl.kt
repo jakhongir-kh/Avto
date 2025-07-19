@@ -3,11 +3,8 @@ package com.uztest.avto.data.repository
 import com.uztest.avto.domain.model.Category
 import com.uztest.avto.domain.model.Question
 import com.uztest.avto.domain.repository.QuestionRepository
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class QuestionRepositoryImpl @Inject constructor() : QuestionRepository {
+class QuestionRepositoryImpl : QuestionRepository {
     
     private val categories = listOf(
         Category(1, "Traffic Signs", "Learn about road signs and their meanings", "traffic_light", 50),
